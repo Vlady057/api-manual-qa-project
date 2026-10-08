@@ -1,0 +1,507 @@
+{
+    "info": {
+        "_postman_id": "api-manual-qa-project",
+        "name": "API Manual QA Project",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "GET - Get All Posts",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    pm.expect(response).to.be.an(\"array\");",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains 100 posts\", function () {",
+                            "    pm.expect(response).to.have.lengthOf(100);",
+                            "});",
+                            "",
+                            "pm.test(\"First post has required fields\", function () {",
+                            "    pm.expect(response[0]).to.have.property(\"userId\");",
+                            "    pm.expect(response[0]).to.have.property(\"id\");",
+                            "    pm.expect(response[0]).to.have.property(\"title\");",
+                            "    pm.expect(response[0]).to.have.property(\"body\");",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "GET - Get Post By ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/1",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts",
+                        "1"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is an object\", function () {",
+                            "    pm.expect(response).to.be.an(\"object\");",
+                            "    pm.expect(response).not.to.be.an(\"array\");",
+                            "});",
+                            "",
+                            "pm.test(\"Post ID is 1\", function () {",
+                            "    pm.expect(response.id).to.eql(1);",
+                            "});",
+                            "",
+                            "pm.test(\"Required fields exist\", function () {",
+                            "    pm.expect(response).to.have.all.keys(\"userId\", \"id\", \"title\", \"body\");",
+                            "});",
+                            "",
+                            "pm.test(\"Title and body are not empty\", function () {",
+                            "    pm.expect(response.title).to.be.a(\"string\").and.not.empty;",
+                            "    pm.expect(response.body).to.be.a(\"string\").and.not.empty;",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "GET - Get Nonexistent Post",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/9999",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts",
+                        "9999"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 404\", function () {",
+                            "    pm.response.to.have.status(404);",
+                            "});",
+                            "",
+                            "pm.test(\"Response body is an empty object\", function () {",
+                            "    const response = pm.response.json();",
+                            "    pm.expect(response).to.be.an(\"object\");",
+                            "    pm.expect(response).not.to.be.an(\"array\");",
+                            "    pm.expect(response).to.be.empty;",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "POST - Create Post",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"Manual QA API Test\",\n    \"body\": \"Testing POST request in Postman\",\n    \"userId\": 1\n}"
+                },
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 201\", function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains the submitted title\", function () {",
+                            "    pm.expect(response.title).to.eql(\"Manual QA API Test\");",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains the submitted body\", function () {",
+                            "    pm.expect(response.body).to.eql(\"Testing POST request in Postman\");",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains the correct userId\", function () {",
+                            "    pm.expect(response.userId).to.eql(1);",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains a generated ID\", function () {",
+                            "    pm.expect(response).to.have.property(\"id\");",
+                            "    pm.expect(response.id).to.be.a(\"number\");",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "PUT - Update Post",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"id\": 1,\n    \"title\": \"Updated Manual QA Test\",\n    \"body\": \"Post content was completely updated\",\n    \"userId\": 1\n}"
+                },
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/1",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts",
+                        "1"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Post ID remains 1\", function () {",
+                            "    pm.expect(response.id).to.eql(1);",
+                            "});",
+                            "",
+                            "pm.test(\"Title was updated\", function () {",
+                            "    pm.expect(response.title).to.eql(\"Updated Manual QA Test\");",
+                            "});",
+                            "",
+                            "pm.test(\"Body was updated\", function () {",
+                            "    pm.expect(response.body).to.eql(\"Post content was completely updated\");",
+                            "});",
+                            "",
+                            "pm.test(\"User ID remains 1\", function () {",
+                            "    pm.expect(response.userId).to.eql(1);",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "PATCH - Partial Update Post",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"Partially Updated Title\"\n}"
+                },
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/1",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts",
+                        "1"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Post ID remains 1\", function () {",
+                            "    pm.expect(response.id).to.eql(1);",
+                            "});",
+                            "",
+                            "pm.test(\"Title was partially updated\", function () {",
+                            "    pm.expect(response.title).to.eql(\"Partially Updated Title\");",
+                            "});",
+                            "",
+                            "pm.test(\"User ID is preserved\", function () {",
+                            "    pm.expect(response.userId).to.eql(1);",
+                            "});",
+                            "",
+                            "pm.test(\"Body is preserved\", function () {",
+                            "    pm.expect(response.body).to.be.a(\"string\").and.not.empty;",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "DELETE - Delete Post",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/1",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts",
+                        "1"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is an object\", function () {",
+                            "    const response = pm.response.json();",
+                            "    pm.expect(response).to.be.an(\"object\");",
+                            "    pm.expect(response).not.to.be.an(\"array\");",
+                            "});",
+                            "",
+                            "pm.test(\"Deleted post has ID 1\", function () {",
+                            "    const response = pm.response.json();",
+                            "    pm.expect(response.id).to.eql(1);",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "GET - Get Post With Invalid ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/abc",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts",
+                        "abc"
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 404\", function () {",
+                            "    pm.response.to.have.status(404);",
+                            "});",
+                            "",
+                            "pm.test(\"Response body is an empty object\", function () {",
+                            "    const response = pm.response.json();",
+                            "    pm.expect(response).to.be.an(\"object\");",
+                            "    pm.expect(response).not.to.be.an(\"array\");",
+                            "    pm.expect(response).to.be.empty;",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "GET - Filter Posts By User ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts?userId=1",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts"
+                    ],
+                    "query": [
+                        {
+                            "key": "userId",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    pm.expect(response).to.be.an(\"array\");",
+                            "});",
+                            "",
+                            "pm.test(\"All posts belong to userId 1\", function () {",
+                            "    response.forEach(function (post) {",
+                            "        pm.expect(post.userId).to.eql(1);",
+                            "    });",
+                            "});",
+                            "",
+                            "pm.test(\"Response is not empty\", function () {",
+                            "    pm.expect(response.length).to.be.above(0);",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "GET - Filter Posts By Nonexistent User ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts?userId=999",
+                    "protocol": "https",
+                    "host": [
+                        "jsonplaceholder",
+                        "typicode",
+                        "com"
+                    ],
+                    "path": [
+                        "posts"
+                    ],
+                    "query": [
+                        {
+                            "key": "userId",
+                            "value": "999"
+                        }
+                    ]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "",
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    pm.expect(response).to.be.an(\"array\");",
+                            "});",
+                            "",
+                            "pm.test(\"Response is empty\", function () {",
+                            "    pm.expect(response).to.have.lengthOf(0);",
+                            "});"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
